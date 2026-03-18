@@ -14,10 +14,10 @@
             background: rgba(10, 10, 10, 0.8);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(220, 38, 38, 0.2); /* Subtle Red Border */
+            border: 1px solid rgba(220, 38, 38, 0.2);
         }
 
-        /* Video Background Logic */
+        /* Responsive Video Background Logic */
         .video-bg {
             position: fixed;
             top: 50%;
@@ -31,20 +31,17 @@
             object-fit: cover;
         }
 
-        /* Default: Show Mobile Video, Hide Desktop */
         #mobile-video { display: block; }
         #desktop-video { display: none; }
 
-        /* Desktop Breakpoint: Show Desktop Video, Hide Mobile */
         @media (min-width: 768px) {
             #mobile-video { display: none; }
             #desktop-video { display: block; }
         }
 
-        /* Yumeko Red Glow Text */
         .text-kakegurui { 
             color: #ffffff; 
-            text-shadow: 0 0 10px rgba(220, 38, 38, 0.8), 0 0 20px rgba(0, 0, 0, 1); 
+            text-shadow: 0 0 10px rgba(220, 38, 38, 0.8); 
         }
     </style>
 </head>
@@ -101,7 +98,33 @@
                     </div>
                 </div>
 
+                <div class="glass-dark rounded-[2rem] overflow-hidden group transition-all duration-500 hover:shadow-[0_0_50px_rgba(220,38,38,0.3)] border-t-4 border-red-600">
+                    <div class="overflow-hidden bg-black/60 relative">
+                        <img src="cert3.png" alt="Forge Fundamentals" class="w-full h-72 object-contain p-6 transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-60"></div>
+                    </div>
+                    <div class="p-10">
+                        <span class="text-[10px] font-mono text-red-500 uppercase tracking-widest mb-2 block font-bold">High Roller App-Dev</span>
+                        <h3 class="text-2xl font-black leading-tight uppercase tracking-tight italic">
+                            Atlassian Credentialed in Forge Fundamentals
+                        </h3>
+                    </div>
                 </div>
+
+                <div class="glass-dark rounded-[2rem] overflow-hidden group transition-all duration-500 hover:shadow-[0_0_50px_rgba(220,38,38,0.3)] border-t-4 border-slate-100">
+                    <div class="overflow-hidden bg-black/60 relative">
+                        <img src="cert4.png" alt="Rovo Fundamentals" class="w-full h-72 object-contain p-6 transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-60"></div>
+                    </div>
+                    <div class="p-10">
+                        <span class="text-[10px] font-mono text-slate-400 uppercase tracking-widest mb-2 block font-bold">Artificial Intelligence Luck</span>
+                        <h3 class="text-2xl font-black leading-tight uppercase tracking-tight italic">
+                            Atlassian Credentialed in Rovo Fundamentals
+                        </h3>
+                    </div>
+                </div>
+
+            </div>
 
             <div class="mt-20 p-10 rounded-[3rem] glass-dark border border-red-600/20 text-center relative overflow-hidden">
                 <div class="absolute top-0 left-0 w-1 h-full bg-red-600"></div>
