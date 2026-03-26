@@ -11,27 +11,27 @@
         body { 
             font-family: 'Space Grotesk', sans-serif; 
             background-color: #000000; 
-            transition: all 0.5s ease;
+            transition: background-color 0.5s ease;
         }
 
+        /* YUMEKO STYLE (Default) */
         .glass-card {
             background: rgba(10, 10, 10, 0.8);
             backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(220, 38, 38, 0.15);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.4s ease;
         }
+        .text-accent { color: #dc2626; transition: color 0.5s; } /* Red */
+        .bg-accent { background-color: #dc2626; transition: background-color 0.5s; }
+        .border-accent { border-color: #dc2626; transition: border-color 0.5s; }
+        .name-glow { text-shadow: 0 0 15px rgba(220, 38, 38, 0.6); transition: text-shadow 0.5s; }
 
-        /* --- GOJO MODE OVERRIDES --- */
-        body.gojo-mode .glass-card { border-color: rgba(59, 130, 246, 0.3); }
-        body.gojo-mode .text-red-500 { color: #3b82f6; }
-        body.gojo-mode .bg-red-600 { background-color: #2563eb; }
-        body.gojo-mode .border-red-600 { border-color: #2563eb; }
-        body.gojo-mode .name-glow { text-shadow: 0 0 15px rgba(37, 99, 235, 0.8); }
-        body.gojo-mode .border-t-red-600\/50 { border-top-color: rgba(37, 99, 235, 0.5); }
-        body.gojo-mode .shadow-\[0_0_25px_rgba\(220\,38\,38\,0\.4\)\] { box-shadow: 0 0 25px rgba(37, 99, 235, 0.6); }
-
-        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        /* GOJO STYLE (Active) */
+        body.gojo-mode .glass-card { border-color: rgba(59, 130, 246, 0.4); }
+        body.gojo-mode .text-accent { color: #3b82f6; } /* Blue */
+        body.gojo-mode .bg-accent { background-color: #3b82f6; }
+        body.gojo-mode .border-accent { border-color: #3b82f6; }
+        body.gojo-mode .name-glow { text-shadow: 0 0 15px rgba(59, 130, 246, 0.8); }
 
         .video-bg {
             position: fixed;
@@ -39,92 +39,69 @@
             left: 50%;
             min-width: 100%;
             min-height: 100%;
-            width: auto;
-            height: auto;
             z-index: -100;
             transform: translateX(-50%) translateY(-50%);
             object-fit: cover;
-            transition: opacity 0.5s ease;
         }
 
-        #mobile-video, #desktop-video { display: none; }
+        #mobile-video { display: block; }
+        #desktop-video { display: none; }
 
-        /* Logic for Yumeko (Red) vs Gojo (Blue) showing */
-        @media (max-width: 767px) {
-            body:not(.gojo-mode) #mobile-video { display: block; }
-            body.gojo-mode #gojo-mobile { display: block; }
-        }
         @media (min-width: 768px) {
-            body:not(.gojo-mode) #desktop-video { display: block; }
-            body.gojo-mode #gojo-desktop { display: block; }
+            #mobile-video { display: none; }
+            #desktop-video { display: block; }
         }
 
-        .name-glow { text-shadow: 0 0 15px rgba(220, 38, 38, 0.6); }
-
-        /* Floating Toggle Button */
         .mode-toggle {
             position: fixed;
             top: 20px;
             right: 20px;
             z-index: 100;
-            cursor: pointer;
-            padding: 10px;
-            border-radius: 50%;
             background: rgba(255,255,255,0.1);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255,255,255,0.2);
-            transition: transform 0.3s ease;
+            padding: 12px;
+            border-radius: 50%;
+            cursor: pointer;
         }
-        .mode-toggle:hover { transform: scale(1.1) rotate(15deg); }
     </style>
 </head>
 <body class="min-h-screen text-white overflow-x-hidden">
 
-    <button onclick="toggleDomain()" class="mode-toggle" title="Switch Domain">
+    <button onclick="toggleDomain()" class="mode-toggle">
         <svg id="toggle-icon" class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l.707-.707M6.343 6.343l.707-.707" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
         </svg>
     </button>
 
     <video autoplay muted loop playsinline id="mobile-video" class="video-bg">
-        <source src="girl1.mp4" type="video/mp4">
+        <source id="src-mobile" src="girl1.mp4" type="video/mp4">
     </video>
+
     <video autoplay muted loop playsinline id="desktop-video" class="video-bg">
-        <source src="girl2.mp4" type="video/mp4">
+        <source id="src-desktop" src="girl2.mp4" type="video/mp4">
     </video>
 
-    <video autoplay muted loop playsinline id="gojo-mobile" class="video-bg" style="display:none;">
-        <source src="gojo-mobile.mp4" type="video/mp4">
-    </video>
-    <video autoplay muted loop playsinline id="gojo-desktop" class="video-bg" style="display:none;">
-        <source src="gojo-desktop.mp4" type="video/mp4">
-    </video>
-
-    <div id="overlay" class="fixed inset-0 bg-gradient-to-b from-black/70 via-black/85 to-red-950/40 -z-[90]"></div>
+    <div id="overlay" class="fixed inset-0 bg-gradient-to-b from-black/70 via-black/85 to-red-950/40 -z-[90] transition-all duration-700"></div>
 
     <div class="relative z-10 min-h-screen flex items-center justify-center py-12 px-6">
         <div class="max-w-4xl w-full">
             <div class="text-center mb-12">
                 <div class="relative inline-block mb-6">
-                    <img src="charvin.jpg" alt="Charvin Kale" class="w-32 h-32 rounded-3xl object-cover border-2 border-red-600 shadow-[0_0_25px_rgba(220,38,38,0.4)] transition-all duration-500" id="profile-img">
-                    <div class="absolute -bottom-2 -right-2 bg-red-600 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter border-4 border-black transition-colors duration-500" id="status-badge">Active</div>
+                    <img src="charvin.jpg" class="w-32 h-32 rounded-3xl object-cover border-2 border-accent shadow-[0_0_25px_rgba(220,38,38,0.4)] transition-all duration-500">
+                    <div class="absolute -bottom-2 -right-2 bg-accent px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter border-4 border-black transition-colors duration-500">Active</div>
                 </div>
-                <h1 class="text-5xl font-black uppercase tracking-tighter italic name-glow transition-all duration-500">Charvin Kale M. Peñaverde</h1>
-                <p class="text-red-500 font-mono tracking-[0.4em] uppercase text-sm mt-2 transition-colors duration-500" id="role-text">Jira Developer</p>
-                
-                <div class="flex justify-center gap-6 mt-8">
-                    <a href="#" class="flex items-center gap-2 text-slate-400 hover:text-red-500 transition-colors"><span class="text-xs font-bold uppercase tracking-widest">LinkedIn</span></a>
-                    <a href="#" class="flex items-center gap-2 text-slate-400 hover:text-red-500 transition-colors"><span class="text-xs font-bold uppercase tracking-widest">GitHub</span></a>
-                </div>
+                <h1 class="text-5xl font-black uppercase tracking-tighter italic name-glow">Charvin Kale M. Peñaverde</h1>
+                <p class="text-accent font-mono tracking-[0.4em] uppercase text-sm mt-2">Jira Developer</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <a href="projects.html" class="glass-card p-10 rounded-[2.5rem] group text-center border-t-2 border-t-red-600/50 transition-all duration-500">
-                    <h2 class="text-2xl font-black uppercase italic tracking-tight mb-2 group-hover:text-red-500 transition-colors">Project Registry</h2>
+                <a href="projects.html" class="glass-card p-10 rounded-[2.5rem] group text-center border-t-2 border-accent/50">
+                    <h2 class="text-2xl font-black uppercase italic tracking-tight mb-2 group-hover:text-accent transition-colors">Project Registry</h2>
                     <p class="text-slate-400 text-sm">Review high-stakes enterprise workflows.</p>
                 </a>
 
-                <a href="certificates.html" class="glass-card p-10 rounded-[2.5rem] group text-center border-t-2 border-t-slate-100/30 transition-all duration-500">
+                <a href="certificates.html" class="glass-card p-10 rounded-[2.5rem] group text-center border-t-2 border-slate-100/30">
                     <h2 class="text-2xl font-black uppercase italic tracking-tight mb-2 group-hover:text-white transition-colors">Verified Credentials</h2>
                     <p class="text-slate-400 text-sm">Official Atlassian certifications.</p>
                 </a>
@@ -136,19 +113,28 @@
         function toggleDomain() {
             const body = document.body;
             const overlay = document.getElementById('overlay');
-            const icon = document.getElementById('toggle-icon');
-            
+            const vidMobile = document.getElementById('mobile-video');
+            const vidDesktop = document.getElementById('desktop-video');
+            const srcMobile = document.getElementById('src-mobile');
+            const srcDesktop = document.getElementById('src-desktop');
+
             body.classList.toggle('gojo-mode');
 
             if (body.classList.contains('gojo-mode')) {
-                // Switch to Gojo Colors
+                // SWITCH TO GOJO
+                srcMobile.src = "gojo2.mp4"; // Mobile
+                srcDesktop.src = "gojo1.mp4"; // Desktop
                 overlay.classList.replace('to-red-950/40', 'to-blue-950/40');
-                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />';
             } else {
-                // Switch back to Yumeko Colors
+                // SWITCH TO YUMEKO
+                srcMobile.src = "girl1.mp4";
+                srcDesktop.src = "girl2.mp4";
                 overlay.classList.replace('to-blue-950/40', 'to-red-950/40');
-                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l.707-.707M6.343 6.343l.707-.707" />';
             }
+
+            // Reload videos to apply the new source
+            vidMobile.load();
+            vidDesktop.load();
         }
     </script>
 </body>
