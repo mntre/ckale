@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Command Center | Charvin Kale</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;700&family=JetBrains+Mono:wght@400;700&display=swap');
         
@@ -19,50 +20,79 @@
             background: rgba(10, 10, 10, 0.8);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(220, 38, 38, 0.15);
-            transition: all 0.4s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .text-accent { color: #dc2626; transition: color 0.5s; } /* Red */
+        .text-accent { color: #dc2626; transition: color 0.5s; }
         .bg-accent { background-color: #dc2626; transition: background-color 0.5s; }
         .border-accent { border-color: #dc2626; transition: border-color 0.5s; }
         .name-glow { text-shadow: 0 0 15px rgba(220, 38, 38, 0.6); transition: text-shadow 0.5s; }
 
-        /* GOJO STYLE (Active) */
-        body.gojo-mode .glass-card { border-color: rgba(59, 130, 246, 0.4); }
-        body.gojo-mode .text-accent { color: #3b82f6; } /* Blue */
+        /* HOVER STATES */
+        .glass-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: #dc2626;
+            box-shadow: 0 10px 30px -10px rgba(220, 38, 38, 0.5);
+        }
+        
+        .card-btn {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover .card-btn {
+            background-color: #dc2626;
+            color: white;
+            border-color: #dc2626;
+            box-shadow: 0 0 15px rgba(220, 38, 38, 0.4);
+        }
+
+        /* GOJO MODE OVERRIDES */
+        body.gojo-mode .glass-card { border-color: rgba(59, 130, 246, 0.2); }
+        body.gojo-mode .glass-card:hover { 
+            border-color: #3b82f6; 
+            box-shadow: 0 10px 30px -10px rgba(59, 130, 246, 0.5); 
+        }
+        body.gojo-mode .glass-card:hover .card-btn {
+            background-color: #3b82f6;
+            border-color: #3b82f6;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+        }
+        body.gojo-mode .text-accent { color: #3b82f6; }
         body.gojo-mode .bg-accent { background-color: #3b82f6; }
         body.gojo-mode .border-accent { border-color: #3b82f6; }
         body.gojo-mode .name-glow { text-shadow: 0 0 15px rgba(59, 130, 246, 0.8); }
 
         .video-bg {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            min-width: 100%;
-            min-height: 100%;
-            z-index: -100;
-            transform: translateX(-50%) translateY(-50%);
-            object-fit: cover;
+            position: fixed; top: 50%; left: 50%; min-width: 100%; min-height: 100%;
+            z-index: -100; transform: translateX(-50%) translateY(-50%); object-fit: cover;
         }
 
         #mobile-video { display: block; }
         #desktop-video { display: none; }
-
         @media (min-width: 768px) {
             #mobile-video { display: none; }
             #desktop-video { display: block; }
         }
 
+        .contact-link {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            padding: 12px; border-radius: 12px; background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s ease;
+            font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;
+        }
+        .contact-link:hover { background: rgba(255,255,255,0.08); transform: translateY(-3px); border-color: currentColor; }
+
         .mode-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 100;
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
-            padding: 12px;
-            border-radius: 50%;
-            cursor: pointer;
+            position: fixed; top: 20px; right: 20px; z-index: 100;
+            background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2); padding: 12px; border-radius: 50%; cursor: pointer;
         }
     </style>
 </head>
@@ -77,7 +107,6 @@
     <video autoplay muted loop playsinline id="mobile-video" class="video-bg">
         <source id="src-mobile" src="girl1.mp4" type="video/mp4">
     </video>
-
     <video autoplay muted loop playsinline id="desktop-video" class="video-bg">
         <source id="src-desktop" src="girl2.mp4" type="video/mp4">
     </video>
@@ -86,7 +115,8 @@
 
     <div class="relative z-10 min-h-screen flex items-center justify-center py-12 px-6">
         <div class="max-w-4xl w-full">
-            <div class="text-center mb-12">
+            
+            <div class="text-center mb-10">
                 <div class="relative inline-block mb-6">
                     <img src="charvin.jpg" class="w-32 h-32 rounded-3xl object-cover border-2 border-accent shadow-[0_0_25px_rgba(220,38,38,0.4)] transition-all duration-500">
                     <div class="absolute -bottom-2 -right-2 bg-accent px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter border-4 border-black transition-colors duration-500">Active</div>
@@ -95,21 +125,53 @@
                 <p class="text-accent font-mono tracking-[0.4em] uppercase text-sm mt-2">Jira Developer</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <a href="projects.html" class="glass-card p-10 rounded-[2.5rem] group text-center border-t-2 border-accent/50">
-                    <h2 class="text-2xl font-black uppercase italic tracking-tight mb-2 group-hover:text-accent transition-colors">Project Registry</h2>
-                    <p class="text-slate-400 text-sm">Review high-stakes enterprise workflows.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <a href="projects.html" class="glass-card p-10 rounded-[2.5rem] group text-center">
+                    <h2 class="text-2xl font-black uppercase italic mb-1 transition-colors">Project Registry</h2>
                 </a>
-
-                <a href="certificates.html" class="glass-card p-10 rounded-[2.5rem] group text-center border-t-2 border-slate-100/30">
-                    <h2 class="text-2xl font-black uppercase italic tracking-tight mb-2 group-hover:text-white transition-colors">Verified Credentials</h2>
-                    <p class="text-slate-400 text-sm">Official Atlassian certifications.</p>
+                
+                <a href="certificates.html" class="glass-card p-10 rounded-[2.5rem] group text-center">
+                    <h2 class="text-2xl font-black uppercase italic mb-1 transition-colors">Verified Credentials</h2>
+                    <p class="text-slate-400 text-xs mb-4">Official Atlassian certifications.</p>
                 </a>
             </div>
+
+            <div class="glass-card p-8 md:p-10 rounded-[2.5rem] border-b-4 border-accent">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="map-pin" class="w-5 h-5 text-accent"></i>
+                            <span class="text-sm font-bold text-slate-200">Santa Rosa City, Laguna, Philippines</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="mail" class="w-5 h-5 text-accent"></i>
+                            <span class="text-sm font-bold text-slate-200">charvinpe08@gmail.com</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <a href="viber://chat?number=+639956674596" class="contact-link text-[#7360f2]">
+                            <i data-lucide="message-circle" class="w-4 h-4"></i> Viber
+                        </a>
+                        <a href="https://www.linkedin.com/in/charvin-kale-pe%C3%B1averde-1958ab320/" target="_blank" class="contact-link text-[#0077b5]">
+                            <i data-lucide="linkedin" class="w-4 h-4"></i> LinkedIn
+                        </a>
+                        <a href="https://github.com/mntre/ckale.github.io/blob/main/README.md" target="_blank" class="contact-link text-white">
+                            <i data-lucide="github" class="w-4 h-4"></i> GitHub
+                        </a>
+                        <a href="resume.pdf" download class="contact-link bg-accent text-white border-none hover:bg-white hover:text-black">
+                            <i data-lucide="download" class="w-4 h-4"></i> Resume
+                        </a>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
     <script>
+        lucide.createIcons();
+
         function toggleDomain() {
             const body = document.body;
             const overlay = document.getElementById('overlay');
@@ -121,21 +183,29 @@
             body.classList.toggle('gojo-mode');
 
             if (body.classList.contains('gojo-mode')) {
-                // SWITCH TO GOJO
-                srcMobile.src = "gojo2.mp4"; // Mobile
-                srcDesktop.src = "gojo1.mp4"; // Desktop
+                srcMobile.src = "gojo2.mp4";
+                srcDesktop.src = "gojo1.mp4";
                 overlay.classList.replace('to-red-950/40', 'to-blue-950/40');
+                localStorage.setItem('domainMode', 'gojo');
             } else {
-                // SWITCH TO YUMEKO
                 srcMobile.src = "girl1.mp4";
                 srcDesktop.src = "girl2.mp4";
                 overlay.classList.replace('to-blue-950/40', 'to-red-950/40');
+                localStorage.setItem('domainMode', 'yumeko');
             }
-
-            // Reload videos to apply the new source
-            vidMobile.load();
-            vidDesktop.load();
+            vidMobile.load(); vidDesktop.load();
         }
+
+        window.onload = () => {
+            if (localStorage.getItem('domainMode') === 'gojo') {
+                document.body.classList.add('gojo-mode');
+                document.getElementById('src-mobile').src = "gojo2.mp4";
+                document.getElementById('src-desktop').src = "gojo1.mp4";
+                document.getElementById('overlay').classList.replace('to-red-950/40', 'to-blue-950/40');
+                document.getElementById('mobile-video').load();
+                document.getElementById('desktop-video').load();
+            }
+        };
     </script>
 </body>
 </html>
