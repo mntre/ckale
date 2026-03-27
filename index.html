@@ -11,13 +11,13 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;700&family=JetBrains+Mono:wght@400;700&display=swap');
         
-        :root { --accent-glow: #dc2626; }
+        :root { --accent-glow: #dc2626; --accent-border: rgba(220, 38, 38, 0.4); }
         body { font-family: 'Space Grotesk', sans-serif; background-color: #000000; color: white; transition: background-color 0.5s ease; }
 
         .glass-card {
             background: rgba(10, 10, 10, 0.8);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(220, 38, 38, 0.15);
+            border: 1px solid var(--accent-border);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -32,7 +32,6 @@
             gap: 5rem; min-width: 100%; animation: scroll 20s linear infinite;
         }
         
-        /* ICON STYLING */
         .tech-icon { 
             font-size: 3.5rem; 
             color: white;
@@ -46,14 +45,18 @@
 
         @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-100%); } }
 
-        /* VIDEO & OVERLAY */
         .video-bg {
             position: fixed; top: 50%; left: 50%; min-width: 100%; min-height: 100%;
             z-index: -100; transform: translateX(-50%) translateY(-50%); object-fit: cover;
             opacity: 0.6;
         }
 
-        body.gojo-mode { --accent-glow: #3b82f6; }
+        /* GOJO MODE STYLE OVERRIDES */
+        body.gojo-mode { --accent-glow: #3b82f6; --accent-border: rgba(59, 130, 246, 0.4); }
+        body.gojo-mode .text-red-500 { color: #3b82f6; }
+        body.gojo-mode .border-red-600 { border-color: #3b82f6; }
+        body.gojo-mode .bg-red-600 { background-color: #3b82f6; }
+
         .mode-toggle {
             position: fixed; top: 20px; right: 20px; z-index: 100;
             background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);
@@ -80,28 +83,28 @@
         <div class="max-w-4xl w-full">
             
             <div class="text-center mb-10">
-                <img src="charvin.jpg" class="w-24 h-24 rounded-3xl object-cover mx-auto border-2 border-red-600 shadow-lg mb-4">
+                <img src="charvin.jpg" class="w-24 h-24 rounded-3xl object-cover mx-auto border-2 border-red-600 shadow-lg mb-4 transition-colors">
                 <h1 class="text-4xl font-black uppercase italic tracking-tighter">Charvin Kale M. Peñaverde</h1>
-                <p class="text-red-500 font-mono tracking-[0.3em] text-xs mt-2 uppercase">Jira Developer</p>
+                <p class="text-red-500 font-mono tracking-[0.3em] text-xs mt-2 uppercase transition-colors">Jira Developer</p>
             </div>
 
-            <div class="glass-card p-8 rounded-[2rem] border-b-4 border-red-600 mb-10">
+            <div class="glass-card p-8 rounded-[2rem] border-b-4 border-red-600 mb-10 transition-all">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="space-y-3">
                         <div class="flex items-center gap-3">
-                            <i data-lucide="map-pin" class="w-4 h-4 text-red-500"></i>
+                            <i data-lucide="map-pin" class="w-4 h-4 text-red-500 transition-colors"></i>
                             <span class="text-xs font-bold">Santa Rosa City, Laguna, Philippines</span>
                         </div>
                         <div class="flex items-center gap-3">
-                            <i data-lucide="mail" class="w-4 h-4 text-red-500"></i>
+                            <i data-lucide="mail" class="w-4 h-4 text-red-500 transition-colors"></i>
                             <span class="text-xs font-bold">charvinpe08@gmail.com</span>
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-2">
-                        <a href="#" class="p-2 border border-white/10 rounded-lg text-center text-[10px] font-bold uppercase hover:bg-red-600 transition-all">Viber</a>
-                        <a href="https://www.linkedin.com/in/charvin-kale-pe%C3%B1averde-1958ab320/" class="p-2 border border-white/10 rounded-lg text-center text-[10px] font-bold uppercase hover:bg-red-600 transition-all">LinkedIn</a>
-                        <a href="https://github.com/mntre/ckale/blob/main/README.md" class="p-2 border border-white/10 rounded-lg text-center text-[10px] font-bold uppercase hover:bg-red-600 transition-all">GitHub</a>
-                        <a href="resume.pdf" class="p-2 bg-red-600 rounded-lg text-center text-[10px] font-bold uppercase hover:bg-white hover:text-black transition-all">Resume</a>
+                        <a href="viber://chat?number=+639956674596" class="p-2 border border-white/10 rounded-lg text-center text-[10px] font-bold uppercase hover:bg-red-600 transition-all">Viber</a>
+                        <a href="https://www.linkedin.com/in/charvin-kale-pe%C3%B1averde-1958ab320/" target="_blank" class="p-2 border border-white/10 rounded-lg text-center text-[10px] font-bold uppercase hover:bg-red-600 transition-all">LinkedIn</a>
+                        <a href="https://github.com/mntre/ckale/blob/main/README.md" target="_blank" class="p-2 border border-white/10 rounded-lg text-center text-[10px] font-bold uppercase hover:bg-red-600 transition-all">GitHub</a>
+                        <a href="resume.pdf" target="_blank" class="p-2 bg-red-600 rounded-lg text-center text-[10px] font-bold uppercase hover:bg-white hover:text-black transition-all">Resume</a>
                     </div>
                 </div>
             </div>
@@ -136,7 +139,6 @@
                     <h2 class="text-xl font-black uppercase italic">Verified Credentials</h2>
                 </a>
             </div>
-
         </div>
     </div>
 
@@ -145,9 +147,36 @@
         
         function toggleDomain() {
             const body = document.body;
+            const overlay = document.getElementById('overlay');
+            const vidMobile = document.getElementById('mobile-video');
+            const vidDesktop = document.getElementById('desktop-video');
+            const srcMobile = document.getElementById('src-mobile');
+            const srcDesktop = document.getElementById('src-desktop');
+
             body.classList.toggle('gojo-mode');
-            // Add your logic for video swapping here as before
+
+            if (body.classList.contains('gojo-mode')) {
+                srcMobile.src = "gojo2.mp4";
+                srcDesktop.src = "gojo1.mp4";
+                overlay.classList.replace('to-red-950/30', 'to-blue-950/30');
+                localStorage.setItem('domainMode', 'gojo');
+            } else {
+                srcMobile.src = "girl1.mp4";
+                srcDesktop.src = "girl2.mp4";
+                overlay.classList.replace('to-blue-950/30', 'to-red-950/30');
+                localStorage.setItem('domainMode', 'yumeko');
+            }
+            
+            vidMobile.load();
+            vidDesktop.load();
         }
+
+        // Keep the mode consistent when the page loads
+        window.onload = () => {
+            if (localStorage.getItem('domainMode') === 'gojo') {
+                toggleDomain();
+            }
+        };
     </script>
 </body>
 </html>
