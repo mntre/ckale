@@ -3,43 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verified Credentials | Domain Expansion</title>
+    <title>Verified Credentials | Command Center</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;700&family=JetBrains+Mono:wght@400;700&display=swap');
         
-        body { font-family: 'Space Grotesk', sans-serif; background-color: #000000; transition: background-color 0.5s ease; }
-        
-        .glass-dark {
-            background: rgba(10, 10, 10, 0.8);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(220, 38, 38, 0.2);
-            transition: all 0.4s ease;
+        :root {
+            --accent: #dc2626;
+            --accent-glow: rgba(220, 38, 38, 0.5);
         }
 
-        /* ACCENT COLORS (Toggleable) */
-        .text-accent { color: #dc2626; transition: color 0.5s; }
-        .bg-accent { background-color: #dc2626; transition: background-color 0.5s; }
-        .border-accent { border-color: #dc2626; transition: border-color 0.5s; }
-        .text-kakegurui { color: #ffffff; text-shadow: 0 0 10px rgba(220, 38, 38, 0.8); transition: text-shadow 0.5s; }
+        body.gojo-mode {
+            --accent: #3b82f6;
+            --accent-glow: rgba(59, 130, 246, 0.6);
+        }
 
-        /* GOJO MODE OVERRIDES */
-        body.gojo-mode .glass-dark { border-color: rgba(59, 130, 246, 0.4); }
-        body.gojo-mode .text-accent { color: #3b82f6; }
-        body.gojo-mode .bg-accent { background-color: #3b82f6; }
-        body.gojo-mode .border-accent { border-color: #3b82f6; }
-        body.gojo-mode .text-kakegurui { text-shadow: 0 0 15px rgba(59, 130, 246, 0.8); }
+        body { 
+            font-family: 'Space Grotesk', sans-serif; 
+            background-color: #000000; 
+            transition: background-color 0.5s ease;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* MARQUEE SYSTEM */
+        .marquee-container {
+            display: flex;
+            overflow: hidden;
+            user-select: none;
+            gap: 2rem;
+            padding: 60px 0;
+            mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+        }
+
+        .marquee-content {
+            display: flex;
+            flex-shrink: 0;
+            gap: 2.5rem;
+            min-width: 100%;
+            animation: scroll 45s linear infinite;
+        }
+
+        .marquee-container:hover .marquee-content {
+            animation-play-state: paused;
+        }
+
+        @keyframes scroll {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+
+        /* CLEAN CERT CARD */
+        .cert-card {
+            width: 380px;
+            flex-shrink: 0;
+            background: rgba(15, 15, 15, 0.85);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-bottom: 4px solid var(--accent);
+            border-radius: 1rem;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+        }
+
+        .cert-card:hover {
+            transform: scale(1.05) translateY(-15px);
+            border-color: var(--accent);
+            box-shadow: 0 25px 50px -12px var(--accent-glow);
+        }
+
+        .view-hint {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .cert-card:hover .view-hint {
+            opacity: 1;
+        }
 
         .video-bg {
             position: fixed; top: 50%; left: 50%; min-width: 100%; min-height: 100%;
             z-index: -100; transform: translateX(-50%) translateY(-50%); object-fit: cover;
-        }
-
-        #mobile-video { display: block; }
-        #desktop-video { display: none; }
-        @media (min-width: 768px) {
-            #mobile-video { display: none; }
-            #desktop-video { display: block; }
+            opacity: 0.5;
         }
 
         .mode-toggle {
@@ -49,7 +98,7 @@
         }
     </style>
 </head>
-<body class="min-h-screen text-white overflow-x-hidden">
+<body class="min-h-screen">
 
     <button onclick="toggleDomain()" class="mode-toggle">
         <svg id="toggle-icon" class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -64,104 +113,89 @@
         <source id="src-desktop" src="girl2.mp4" type="video/mp4">
     </video>
 
-    <div id="overlay" class="fixed inset-0 bg-gradient-to-b from-black/60 via-black/80 to-red-950/40 -z-[90] transition-all duration-700"></div>
+    <div id="overlay" class="fixed inset-0 bg-gradient-to-b from-black/80 via-black/95 to-red-950/20 -z-[90] transition-all duration-700"></div>
 
-    <div class="relative z-10 py-12 px-6">
-        <div class="max-w-6xl mx-auto">
-            
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-16 gap-6 border-b border-accent/30 pb-8">
-                <a href="index.html" class="group flex items-center gap-3 text-accent font-black hover:text-white transition-all tracking-[0.2em] text-xs font-mono">
-                    <span class="text-2xl group-hover:-translate-x-2 transition-transform">←</span> GO BACK
-                </a>
-                <div class="text-right">
-                    <h1 class="text-4xl font-black uppercase italic tracking-tighter text-kakegurui">Atlassian Credentials</h1>
+    <div class="relative z-10 py-20">
+        
+        <div class="max-w-6xl mx-auto px-6 mb-4">
+            <div class="flex justify-between items-end border-b border-white/10 pb-8">
+                <div>
+                    <a href="index.html" class="group flex items-center gap-2 text-slate-500 font-mono text-[10px] font-bold tracking-[0.3em] hover:text-white transition-colors">
+                        <i data-lucide="chevron-left" class="w-4 h-4 group-hover:-translate-x-1 transition-transform"></i> RETURN
+                    </a>
+                    <h1 class="text-5xl font-black uppercase italic tracking-tighter mt-4">Verified Credentials</h1>
                 </div>
             </div>
+        </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                
-                <div class="glass-dark rounded-[2rem] overflow-hidden group transition-all duration-500 border-t-4 border-accent">
-                    <div class="overflow-hidden bg-black/60 relative">
-                        <img src="cert1.jpg" class="w-full h-72 object-contain p-6 transition-transform duration-700 group-hover:scale-110">
-                    </div>
-                    <div class="p-10">
-                        <span class="text-[10px] font-mono text-accent uppercase tracking-widest mb-2 block font-bold">Winning Hand</span>
-                        <h3 class="text-2xl font-black leading-tight uppercase tracking-tight italic">Atlassian IT Service Management (ITSM)</h3>
+        <div class="marquee-container">
+            <div class="marquee-content" id="cert-track">
+                <div class="cert-card">
+                    <div class="view-hint text-accent"><i data-lucide="maximize-2" class="w-4 h-4"></i></div>
+                    <img src="cert1.jpg" class="w-full h-64 object-contain p-6">
+                    <div class="px-8 pb-8 text-center">
+                        <h3 class="text-lg font-black uppercase tracking-tight">Atlassian IT Service Management (ITSM)</h3>
                     </div>
                 </div>
-
-                <div class="glass-dark rounded-[2rem] overflow-hidden group transition-all duration-500 border-t-4 border-slate-100">
-                    <div class="overflow-hidden bg-black/60 relative">
-                        <img src="cert2.jpg" class="w-full h-72 object-contain p-6 transition-transform duration-700 group-hover:scale-110">
-                    </div>
-                    <div class="p-10">
-                        <span class="text-[10px] font-mono text-slate-400 uppercase tracking-widest mb-2 block font-bold">The Dealer's Logic</span>
-                        <h3 class="text-2xl font-black leading-tight uppercase tracking-tight italic">Jira Administration: Configuration & Automation</h3>
+                <div class="cert-card">
+                    <div class="view-hint text-accent"><i data-lucide="maximize-2" class="w-4 h-4"></i></div>
+                    <img src="cert2.jpg" class="w-full h-64 object-contain p-6">
+                    <div class="px-8 pb-8 text-center">
+                        <h3 class="text-lg font-black uppercase tracking-tight">Jira Administration: Configuration & Automation</h3>
                     </div>
                 </div>
-
-                <div class="glass-dark rounded-[2rem] overflow-hidden group transition-all duration-500 border-t-4 border-accent">
-                    <div class="overflow-hidden bg-black/60 relative">
-                        <img src="cert3.jpg" class="w-full h-72 object-contain p-6 transition-transform duration-700 group-hover:scale-110">
-                    </div>
-                    <div class="p-10">
-                        <span class="text-[10px] font-mono text-accent uppercase tracking-widest mb-2 block font-bold">High Roller App-Dev</span>
-                        <h3 class="text-2xl font-black leading-tight uppercase tracking-tight italic">Atlassian Credentialed in Forge Fundamentals</h3>
+                <div class="cert-card">
+                    <div class="view-hint text-accent"><i data-lucide="maximize-2" class="w-4 h-4"></i></div>
+                    <img src="cert3.jpg" class="w-full h-64 object-contain p-6">
+                    <div class="px-8 pb-8 text-center">
+                        <h3 class="text-lg font-black uppercase tracking-tight">Forge Fundamentals</h3>
                     </div>
                 </div>
-
-                <div class="glass-dark rounded-[2rem] overflow-hidden group transition-all duration-500 border-t-4 border-slate-100">
-                    <div class="overflow-hidden bg-black/60 relative">
-                        <img src="cert4.jpg" class="w-full h-72 object-contain p-6 transition-transform duration-700 group-hover:scale-110">
-                    </div>
-                    <div class="p-10">
-                        <span class="text-[10px] font-mono text-slate-400 uppercase tracking-widest mb-2 block font-bold">Artificial Intelligence Luck</span>
-                        <h3 class="text-2xl font-black leading-tight uppercase tracking-tight italic">Atlassian Credentialed in Rovo Fundamentals</h3>
+                <div class="cert-card">
+                    <div class="view-hint text-accent"><i data-lucide="maximize-2" class="w-4 h-4"></i></div>
+                    <img src="cert4.jpg" class="w-full h-64 object-contain p-6">
+                    <div class="px-8 pb-8 text-center">
+                        <h3 class="text-lg font-black uppercase tracking-tight">Rovo Fundamentals</h3>
                     </div>
                 </div>
-
-                <div class="glass-dark rounded-[2rem] overflow-hidden group transition-all duration-500 border-t-4 border-accent">
-                    <div class="overflow-hidden bg-black/60 relative">
-                        <img src="cert5.jpg" class="w-full h-72 object-contain p-6 transition-transform duration-700 group-hover:scale-110">
-                    </div>
-                    <div class="p-10">
-                        <span class="text-[10px] font-mono text-accent uppercase tracking-widest mb-2 block font-bold">Visual Communication Stake</span>
-                        <h3 class="text-2xl font-black leading-tight uppercase tracking-tight italic">Atlassian Credentialed in Loom Fundamentals</h3>
+                <div class="cert-card">
+                    <div class="view-hint text-accent"><i data-lucide="maximize-2" class="w-4 h-4"></i></div>
+                    <img src="cert5.jpg" class="w-full h-64 object-contain p-6">
+                    <div class="px-8 pb-8 text-center">
+                        <h3 class="text-lg font-black uppercase tracking-tight">Loom Fundamentals</h3>
                     </div>
                 </div>
-
-                <div class="glass-dark rounded-[2rem] overflow-hidden group transition-all duration-500 border-t-4 border-slate-100">
-                    <div class="overflow-hidden bg-black/60 relative">
-                        <img src="cert6.jpg" class="w-full h-72 object-contain p-6 transition-transform duration-700 group-hover:scale-110">
-                    </div>
-                    <div class="p-10">
-                        <span class="text-[10px] font-mono text-slate-400 uppercase tracking-widest mb-2 block font-bold">Strategic Bluff</span>
-                        <h3 class="text-2xl font-black leading-tight uppercase tracking-tight italic">Agile Foundations by PMI</h3>
+                <div class="cert-card">
+                    <div class="view-hint text-accent"><i data-lucide="maximize-2" class="w-4 h-4"></i></div>
+                    <img src="cert6.jpg" class="w-full h-64 object-contain p-6">
+                    <div class="px-8 pb-8 text-center">
+                        <h3 class="text-lg font-black uppercase tracking-tight">Agile Foundations by PMI</h3>
                     </div>
                 </div>
-
-                <div class="glass-dark rounded-[2rem] overflow-hidden group transition-all duration-500 border-t-4 border-accent md:col-span-2">
-                    <div class="overflow-hidden bg-black/60 relative">
-                        <img src="cert7.jpg" class="w-full h-72 object-contain p-6 transition-transform duration-700 group-hover:scale-110">
-                    </div>
-                    <div class="p-10">
-                        <span class="text-[10px] font-mono text-accent uppercase tracking-widest mb-2 block font-bold">The Ultimate Gamble</span>
-                        <h3 class="text-2xl font-black leading-tight uppercase tracking-tight italic">Atlassian Agile Project Management Professional</h3>
+                <div class="cert-card">
+                    <div class="view-hint text-accent"><i data-lucide="maximize-2" class="w-4 h-4"></i></div>
+                    <img src="cert7.jpg" class="w-full h-64 object-contain p-6">
+                    <div class="px-8 pb-8 text-center">
+                        <h3 class="text-lg font-black uppercase tracking-tight">Atlassian Agile Project Management</h3>
                     </div>
                 </div>
-
             </div>
+        </div>
 
-            <div class="mt-20 p-10 rounded-[3rem] glass-dark border border-accent/20 text-center relative overflow-hidden">
-                <div class="absolute top-0 left-0 w-1 h-full bg-accent"></div>
-                <p class="italic text-slate-300 text-lg mb-4">"Continuous learning is the core of effective automation."</p>
-                <p class="text-[10px] font-mono text-accent font-bold uppercase tracking-[0.5em]">Betting on Knowledge</p>
-            </div>
-
+        <div class="max-w-4xl mx-auto px-6 mt-12 text-center">
+            <p class="font-mono text-[9px] text-slate-600 tracking-[0.6em] uppercase italic">
+                All credentials verified via Atlassian University & Project Management Institute
+            </p>
         </div>
     </div>
 
     <script>
+        lucide.createIcons();
+
+        // Infinite loop clone
+        const track = document.getElementById('cert-track');
+        track.innerHTML += track.innerHTML;
+
         function toggleDomain() {
             const body = document.body;
             const overlay = document.getElementById('overlay');
@@ -175,21 +209,24 @@
             if (body.classList.contains('gojo-mode')) {
                 srcMobile.src = "gojo2.mp4";
                 srcDesktop.src = "gojo1.mp4";
-                overlay.classList.replace('to-red-950/40', 'to-blue-950/40');
+                overlay.classList.replace('to-red-950/20', 'to-blue-950/20');
                 localStorage.setItem('domainMode', 'gojo');
             } else {
                 srcMobile.src = "girl1.mp4";
                 srcDesktop.src = "girl2.mp4";
-                overlay.classList.replace('to-blue-950/40', 'to-red-950/40');
+                overlay.classList.replace('to-blue-950/20', 'to-red-950/20');
                 localStorage.setItem('domainMode', 'yumeko');
             }
             vidMobile.load(); vidDesktop.load();
         }
 
-        // Auto-load preference
         window.onload = () => {
             if (localStorage.getItem('domainMode') === 'gojo') {
-                toggleDomain();
+                document.body.classList.add('gojo-mode');
+                document.getElementById('src-mobile').src = "gojo2.mp4";
+                document.getElementById('src-desktop').src = "gojo1.mp4";
+                document.getElementById('mobile-video').load();
+                document.getElementById('desktop-video').load();
             }
         };
     </script>
