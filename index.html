@@ -11,6 +11,10 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;700&family=JetBrains+Mono:wght@400;700&display=swap');
         
+        :root {
+            --accent-glow: #dc2626; /* Default Yumeko Red */
+        }
+
         body { 
             font-family: 'Space Grotesk', sans-serif; 
             background-color: #000000; 
@@ -28,11 +32,11 @@
         .bg-accent { background-color: #dc2626; transition: background-color 0.5s; }
         .name-glow { text-shadow: 0 0 15px rgba(220, 38, 38, 0.6); transition: text-shadow 0.5s; }
 
-        /* HOVER STATES */
+        /* HOVER STATES FOR CARDS */
         .glass-card:hover {
             transform: translateY(-8px) scale(1.02);
-            border-color: #dc2626;
-            box-shadow: 0 10px 30px -10px rgba(220, 38, 38, 0.5);
+            border-color: var(--accent-glow);
+            box-shadow: 0 10px 40px -10px var(--accent-glow);
         }
         
         .card-btn {
@@ -41,38 +45,45 @@
             border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s ease;
         }
         .glass-card:hover .card-btn {
-            background-color: #dc2626; color: white; border-color: #dc2626;
-            box-shadow: 0 0 15px rgba(220, 38, 38, 0.4);
+            background-color: var(--accent-glow);
+            color: white;
+            border-color: var(--accent-glow);
+            box-shadow: 0 0 15px var(--accent-glow);
         }
 
         /* TECH STACK MARQUEE */
         .marquee {
             display: flex; overflow: hidden; user-select: none; gap: 4rem;
-            mask-image: linear-gradient(to right, transparent, black 20%, black 80%, transparent);
+            mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+            padding: 20px 0;
         }
         .marquee-content {
             display: flex; flex-shrink: 0; align-items: center; justify-content: space-around;
-            gap: 4rem; min-width: 100%; animation: scroll 20s linear infinite;
+            gap: 5rem; min-width: 100%; animation: scroll 25s linear infinite;
         }
+        
+        .tech-icon { 
+            font-size: 3.5rem; 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            opacity: 0.9;
+            filter: drop-shadow(0 0 8px var(--accent-glow));
+        }
+        .tech-icon:hover { 
+            opacity: 1; 
+            transform: scale(1.3) translateY(-10px);
+            filter: drop-shadow(0 0 20px var(--accent-glow));
+        }
+
         @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-100%); } }
-        .tech-icon { font-size: 3rem; color: #64748b; transition: all 0.4s ease; filter: grayscale(1); opacity: 0.5; }
-        .tech-icon:hover { filter: grayscale(0); opacity: 1; transform: scale(1.2); }
 
         /* GOJO MODE OVERRIDES */
+        body.gojo-mode { --accent-glow: #3b82f6; }
         body.gojo-mode .glass-card { border-color: rgba(59, 130, 246, 0.2); }
-        body.gojo-mode .glass-card:hover { 
-            border-color: #3b82f6; box-shadow: 0 10px 30px -10px rgba(59, 130, 246, 0.5); 
-        }
-        body.gojo-mode .glass-card:hover .card-btn {
-            background-color: #3b82f6; border-color: #3b82f6; box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
-        }
         body.gojo-mode .text-accent { color: #3b82f6; }
         body.gojo-mode .bg-accent { background-color: #3b82f6; }
         body.gojo-mode .name-glow { text-shadow: 0 0 15px rgba(59, 130, 246, 0.8); }
-        body.gojo-mode .tech-icon:hover { color: #3b82f6; text-shadow: 0 0 15px rgba(59, 130, 246, 0.5); }
-        /* Yumeko hover color */
-        body:not(.gojo-mode) .tech-icon:hover { color: #dc2626; text-shadow: 0 0 15px rgba(220, 38, 38, 0.5); }
 
+        /* VIDEO BG */
         .video-bg {
             position: fixed; top: 50%; left: 50%; min-width: 100%; min-height: 100%;
             z-index: -100; transform: translateX(-50%) translateY(-50%); object-fit: cover;
@@ -130,22 +141,25 @@
             </div>
 
             <div class="mb-12">
-                <p class="text-center text-slate-500 font-mono text-[10px] font-black uppercase tracking-[0.4em] mb-6">System Architecture & Tooling</p>
+                <p class="text-center text-slate-400 font-mono text-[11px] font-black uppercase tracking-[0.5em] mb-8">
+                    <span class="text-accent">●</span> System Architecture & Tooling <span class="text-accent">●</span>
+                </p>
                 <div class="marquee">
                     <div class="marquee-content">
-                        <i class="devicon-html5-plain tech-icon"></i>
-                        <i class="devicon-css3-plain tech-icon"></i>
+                        <i class="devicon-html5-plain-wordmark tech-icon"></i>
+                        <i class="devicon-css3-plain-wordmark tech-icon"></i>
                         <i class="devicon-javascript-plain tech-icon"></i>
-                        <i class="devicon-python-plain tech-icon"></i>
+                        <i class="devicon-python-plain-wordmark tech-icon"></i>
                         <i class="devicon-azuresqldatabase-plain tech-icon"></i>
-                        <i class="devicon-jira-plain tech-icon"></i> </div>
+                        <i class="devicon-jira-plain-wordmark tech-icon"></i>
+                    </div>
                     <div class="marquee-content" aria-hidden="true">
-                        <i class="devicon-html5-plain tech-icon"></i>
-                        <i class="devicon-css3-plain tech-icon"></i>
+                        <i class="devicon-html5-plain-wordmark tech-icon"></i>
+                        <i class="devicon-css3-plain-wordmark tech-icon"></i>
                         <i class="devicon-javascript-plain tech-icon"></i>
-                        <i class="devicon-python-plain tech-icon"></i>
+                        <i class="devicon-python-plain-wordmark tech-icon"></i>
                         <i class="devicon-azuresqldatabase-plain tech-icon"></i>
-                        <i class="devicon-jira-plain tech-icon"></i>
+                        <i class="devicon-jira-plain-wordmark tech-icon"></i>
                     </div>
                 </div>
             </div>
@@ -155,22 +169,22 @@
                     <div class="space-y-4">
                         <div class="flex items-center gap-3">
                             <i data-lucide="map-pin" class="w-5 h-5 text-accent"></i>
-                            <span class="text-sm font-bold text-slate-200">Pasig, Metro Manila, Philippines</span>
+                            <span class="text-sm font-bold text-slate-200">Santa Rosa City, Laguna, Philippines</span>
                         </div>
                         <div class="flex items-center gap-3">
                             <i data-lucide="mail" class="w-5 h-5 text-accent"></i>
-                            <span class="text-sm font-bold text-slate-200">charvinkale@email.com</span>
+                            <span class="text-sm font-bold text-slate-200">charvinpe@gmail.com</span>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-3">
-                        <a href="viber://chat?number=+639956674596" class="contact-link flex items-center justify-center gap-2 p-3 rounded-xl border border-white/10 text-xs font-bold uppercase transition-all hover:border-[#7360f2] hover:text-[#7360f2]">
+                        <a href="viber://chat?number=+639956674596" class="flex items-center justify-center gap-2 p-3 rounded-xl border border-white/10 text-xs font-bold uppercase transition-all hover:border-[#7360f2] hover:text-[#7360f2] bg-white/5">
                             <i data-lucide="message-circle" class="w-4 h-4"></i> Viber
                         </a>
-                        <a href="#" target="_blank" class="contact-link flex items-center justify-center gap-2 p-3 rounded-xl border border-white/10 text-xs font-bold uppercase transition-all hover:border-[#0077b5] hover:text-[#0077b5]">
+                        <a href="https://www.linkedin.com/in/charvin-kale-pe%C3%B1averde-1958ab320/" target="_blank" class="flex items-center justify-center gap-2 p-3 rounded-xl border border-white/10 text-xs font-bold uppercase transition-all hover:border-[#0077b5] hover:text-[#0077b5] bg-white/5">
                             <i data-lucide="linkedin" class="w-4 h-4"></i> LinkedIn
                         </a>
-                        <a href="#" target="_blank" class="contact-link flex items-center justify-center gap-2 p-3 rounded-xl border border-white/10 text-xs font-bold uppercase transition-all hover:border-white hover:text-white">
+                        <a href="https://github.com/mntre/ckale/blob/main/README.md" target="_blank" class="flex items-center justify-center gap-2 p-3 rounded-xl border border-white/10 text-xs font-bold uppercase transition-all hover:border-white hover:text-white bg-white/5">
                             <i data-lucide="github" class="w-4 h-4"></i> GitHub
                         </a>
                         <a href="resume.pdf" download class="bg-accent text-white flex items-center justify-center gap-2 p-3 rounded-xl text-xs font-bold uppercase transition-all hover:bg-white hover:text-black">
@@ -210,6 +224,7 @@
             vidMobile.load(); vidDesktop.load();
         }
 
+        // Apply saved mode on load
         window.onload = () => {
             if (localStorage.getItem('domainMode') === 'gojo') {
                 document.body.classList.add('gojo-mode');
